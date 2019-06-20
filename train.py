@@ -184,7 +184,7 @@ my_train_aug = Compose([
 ])
 
 
-my_train = MyDataSet('C:/Users/atilla/Projects/denemeler/00HBS_DL_Projects/RETINA_UNET/nn_dl_project/dataset/DRIVE', 'train', my_train_aug)
+my_train = MyDataSet('dataset/DRIVE', 'train', my_train_aug)
 
 
 # my_val_aug = Compose([
@@ -212,7 +212,7 @@ net.collect_params().initialize(ctx=ctx)
 # mx.viz.plot_network(y,shape={'data':(8,3,500,500)}, node_attrs={'shape':'oval','fixedsize':'fasl==false'}).view()
 # exit(0)
 
-num_epochs = 180
+num_epochs = 10
 num_steps = len(my_train) // 8
 
 trainer = gluon.Trainer(net.collect_params(), 'sgd', {
