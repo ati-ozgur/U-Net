@@ -28,15 +28,15 @@ class MyDataSet(Dataset):
         
         self.img_paths = []
         
-        self._img = os.path.join(root, split, 'image', '{}.png')
+        self._img = os.path.join(root, split, 'image', '{}training.tif.png').replace("\\","/")
         self._use_mask = use_mask
         if self._use_mask:
             self._mask = os.path.join(root, split, 'mask', '{}.png')
-        self._lbl = os.path.join(root, split, 'label', '{}.png')
+        self._lbl = os.path.join(root, split, 'label', '{}manual1.gif.png')
         
         for fn in os.listdir(os.path.join(root, split, 'label')):
             if len(fn) > 3 and fn[-4:] == '.png':
-                self.img_paths.append(fn[:-4])
+                self.img_paths.append(fn[:3])
         
     def __len__(self):
         return len(self.img_paths)
@@ -184,7 +184,7 @@ my_train_aug = Compose([
 ])
 
 
-my_train = MyDataSet('/mnt/15F1B72E1A7798FD/DK2/bbanno', 'train', my_train_aug)
+my_train = MyDataSet('C:/Users/atilla/Projects/denemeler/00HBS_DL_Projects/RETINA_UNET/nn_dl_project/dataset/DRIVE', 'train', my_train_aug)
 
 
 # my_val_aug = Compose([
@@ -195,9 +195,9 @@ my_train = MyDataSet('/mnt/15F1B72E1A7798FD/DK2/bbanno', 'train', my_train_aug)
 
 # my_val = MyDataSet('/home/kk/data/ema', 'train', my_val_aug)
 
-train_loader = DataLoader(my_train, batch_size=8, shuffle=True, last_batch='rollover')
+train_loader = DataLoader(my_train, batch_size=1, shuffle=True, last_batch='rollover')
 
-ctx = [mx.gpu(1), mx.gpu(2)]
+ctx = [mx.gpu(0)]
 
 net = DilatedUNet()
 net.hybridize()
@@ -219,7 +219,7 @@ trainer = gluon.Trainer(net.collect_params(), 'sgd', {
     'learning_rate': 0.1,
     'wd': 0.0005,
     'momentum': 0.9,
-    'lr_scheduler': mx.lr_scheduler.PolyScheduler(num_steps * num_epochs, 0.1,  2, 0.0001)
+    'lr_scheduler': mx.lr_scheduler.PolyScheduler(num_steps * num_epochs, 0.1)
 })
 
 from mxnet.gluon.loss import Loss, _apply_weighting, _reshape_like
